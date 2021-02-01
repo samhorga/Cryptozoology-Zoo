@@ -21,4 +21,11 @@ public class ZooController {
     public Zoo addAnimal(@RequestBody Animal animal) {
         return zooService.addAnimal(animal);
     }
+
+    @GetMapping
+    @ResponseStatus(HttpStatus.OK)
+    public Zoo getAnimals() {
+        return zooService.getAnimals();
+    }
+
 }

@@ -22,4 +22,8 @@ public class ZooService {
         zoo.setAnimalList(Collections.singletonList(animal));
         return zooRepository.save(zoo);
     }
+
+    public Zoo getAnimals() {
+        return zooRepository.findAll().stream().findFirst().get();
+    }
 }

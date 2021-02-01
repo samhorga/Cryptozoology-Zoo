@@ -3,6 +3,7 @@ package com.example.CryptozoologyZoo;
 import com.example.CryptozoologyZoo.model.Animal;
 import com.example.CryptozoologyZoo.model.AnimalType;
 import com.example.CryptozoologyZoo.model.Zoo;
+import com.example.CryptozoologyZoo.repository.ZooRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -16,7 +17,8 @@ import org.springframework.test.web.servlet.MvcResult;
 import java.util.Arrays;
 import java.util.Collections;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -29,8 +31,8 @@ class CryptozoologyZooApplicationTests {
 
 	ObjectMapper objectMapper;
 
-//	@Autowired
-//	AnimalRepository animalRepository;
+	@Autowired
+	ZooRepository zooRepository;
 
 	@BeforeEach
 	public void setUp() {
@@ -49,8 +51,28 @@ class CryptozoologyZooApplicationTests {
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(requestJson))
 				.andExpect(status().isCreated())
-				.andExpect(jsonPath("$.animalList[0].name").value("TIGER"));
-//				.andExpect(jsonPath("$.type").value("WALKING"));
+				.andExpect(jsonPath("$.animalList[0].name").value("TIGER"))
+				.andExpect(jsonPath("$.animalList[0].type").value("WALKING"));
 
 	}
+
+	@Test
+	public void getAnimals() throws Exception {
+		Animal tiger = new Animal("TIGER", AnimalType.WALKING);
+		Animal lion = new Animal("LION", AnimalType.WALKING);
+		Animal bird = new Animal("BIRD", AnimalType.FLYING);
+
+		Zoo expectedZoo = new Zoo();
+		expectedZoo.setAnimalList(Arrays.asList(tiger, lion, bird));
+
+		zooRepository.save(expectedZoo);
+
+		MvcResult mvcResult = mockMvc.perform(get("/zoo"))
+				.andExpect(status().isOk()).andReturn();
+
+		Zoo actualZoo = objectMapper.readValue(mvcResult.getResponse().getContentAsString(), Zoo.class);
+
+		assertEquals(expectedZoo.getAnimalList().toString(), actualZoo.getAnimalList().toString());
+	}
+
 }
