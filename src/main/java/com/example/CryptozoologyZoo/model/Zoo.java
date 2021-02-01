@@ -47,8 +47,4 @@ public class Zoo {
     public int hashCode() {
         return Objects.hash(animalList);
     }
-
-    public Animal treatAnimal(Animal tiger) {
-        return tiger.feed();
-    }
 }

@@ -28,9 +28,9 @@ public class ZooController {
         return zooService.getAnimals();
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/{id}/feed")
     @ResponseStatus(HttpStatus.CREATED)
-    public Animal updateAnimal(@RequestBody Animal animal, @PathVariable Long id) {
-        return zooService.updateAnimal(animal, id);
+    public Animal updateAnimal(@PathVariable Long id) {
+        return zooService.feedAnimal(id);
     }
 }

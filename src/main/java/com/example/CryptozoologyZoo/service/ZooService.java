@@ -2,6 +2,7 @@ package com.example.CryptozoologyZoo.service;
 
 
 import com.example.CryptozoologyZoo.model.Animal;
+import com.example.CryptozoologyZoo.model.AnimalMood;
 import com.example.CryptozoologyZoo.model.Zoo;
 import com.example.CryptozoologyZoo.repository.AnimalRepository;
 import com.example.CryptozoologyZoo.repository.ZooRepository;
@@ -30,12 +31,9 @@ public class ZooService {
         return zooRepository.findAll().stream().findFirst().get();
     }
 
-    public Animal updateAnimal(Animal animal, Long id) {
+    public Animal feedAnimal(Long id) {
         Animal animalFounded = animalRepository.findById(id).get();
-        animalFounded.setName(animal.getName());
-        animalFounded.setType(animal.getType());
-        animalFounded.setAnimalMood(animal.getAnimalMood());
-
+        animalFounded.setAnimalMood(AnimalMood.HAPPY);
         return animalRepository.save(animalFounded);
     }
 }

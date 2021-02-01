@@ -4,6 +4,7 @@ import com.example.CryptozoologyZoo.model.Animal;
 import com.example.CryptozoologyZoo.model.AnimalMood;
 import com.example.CryptozoologyZoo.model.AnimalType;
 import com.example.CryptozoologyZoo.model.Zoo;
+import com.example.CryptozoologyZoo.repository.AnimalRepository;
 import com.example.CryptozoologyZoo.repository.ZooRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -14,6 +15,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.verify;
@@ -24,6 +26,9 @@ public class ZooServiceTest {
 
     @Mock
     ZooRepository zooRepository;
+
+    @Mock
+    AnimalRepository animalRepository;
 
     @InjectMocks
     ZooService zooService;
@@ -60,5 +65,18 @@ public class ZooServiceTest {
 
         verify(zooRepository).findAll();
         assertEquals(expectedZoo.getAnimalList().toString(), actualZoo.getAnimalList().toString());
+    }
+
+    @Test
+    public void feedAnimals() {
+        Animal tiger = new Animal("TIGER", AnimalType.WALKING, AnimalMood.UNHAPPY);
+
+        when(animalRepository.save(tiger)).thenReturn(tiger);
+        when(animalRepository.findById(tiger.getId())).thenReturn(Optional.of(tiger));
+
+        Animal animalTreatedReceived = zooService.feedAnimal(tiger.getId());
+
+        verify(animalRepository).save(tiger);
+        assertEquals(AnimalMood.HAPPY, animalTreatedReceived.getAnimalMood());
     }
 }
