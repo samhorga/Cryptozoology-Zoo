@@ -10,7 +10,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.verify;
@@ -26,7 +28,6 @@ public class ZooServiceTest {
     ZooService zooService;
 
 
-
     @Test
     public void addAnimal() {
         Animal animal = new Animal("TIGER", AnimalType.WALKING);
@@ -39,5 +40,24 @@ public class ZooServiceTest {
         verify(zooRepository).save(zoo);
 
         assertEquals(animal, actualZoo.getAnimalList().get(0));
+    }
+
+    @Test
+    public void getAnimals() {
+        Animal tiger = new Animal("TIGER", AnimalType.WALKING);
+        Animal lion = new Animal("LION", AnimalType.WALKING);
+        Animal bird = new Animal("BIRD", AnimalType.FLYING);
+
+        Zoo expectedZoo = new Zoo();
+        expectedZoo.setAnimalList(Arrays.asList(tiger, lion, bird));
+
+        List<Zoo> zooList = Collections.singletonList(expectedZoo);
+
+        when(zooRepository.findAll()).thenReturn(zooList);
+
+        Zoo actualZoo = zooService.getAnimals();
+
+        verify(zooRepository).findAll();
+        assertEquals(expectedZoo.getAnimalList().toString(), actualZoo.getAnimalList().toString());
     }
 }
