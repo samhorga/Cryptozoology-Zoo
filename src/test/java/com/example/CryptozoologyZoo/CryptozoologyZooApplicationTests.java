@@ -1,6 +1,7 @@
 package com.example.CryptozoologyZoo;
 
 import com.example.CryptozoologyZoo.model.Animal;
+import com.example.CryptozoologyZoo.model.AnimalMood;
 import com.example.CryptozoologyZoo.model.AnimalType;
 import com.example.CryptozoologyZoo.model.Zoo;
 import com.example.CryptozoologyZoo.repository.ZooRepository;
@@ -41,7 +42,7 @@ class CryptozoologyZooApplicationTests {
 
 	@Test
 	public void addAnimal() throws Exception {
-		Animal animal = new Animal("TIGER", AnimalType.WALKING);
+		Animal animal = new Animal("TIGER", AnimalType.WALKING, AnimalMood.UNHAPPY);
 		Zoo zoo = new Zoo();
 		zoo.setAnimalList(Collections.singletonList(animal));
 
@@ -58,9 +59,9 @@ class CryptozoologyZooApplicationTests {
 
 	@Test
 	public void getAnimals() throws Exception {
-		Animal tiger = new Animal("TIGER", AnimalType.WALKING);
-		Animal lion = new Animal("LION", AnimalType.WALKING);
-		Animal bird = new Animal("BIRD", AnimalType.FLYING);
+		Animal tiger = new Animal("TIGER", AnimalType.WALKING, AnimalMood.UNHAPPY);
+		Animal lion = new Animal("LION", AnimalType.WALKING, AnimalMood.UNHAPPY);
+		Animal bird = new Animal("BIRD", AnimalType.FLYING, AnimalMood.UNHAPPY);
 
 		Zoo expectedZoo = new Zoo();
 		expectedZoo.setAnimalList(Arrays.asList(tiger, lion, bird));
@@ -73,6 +74,29 @@ class CryptozoologyZooApplicationTests {
 		Zoo actualZoo = objectMapper.readValue(mvcResult.getResponse().getContentAsString(), Zoo.class);
 
 		assertEquals(expectedZoo.getAnimalList().toString(), actualZoo.getAnimalList().toString());
+	}
+
+	@Test
+	public void feedAnimals() throws Exception {
+		Animal tiger = new Animal("TIGER", AnimalType.WALKING, AnimalMood.UNHAPPY);
+
+		Zoo zoo = new Zoo();
+		zoo.setAnimalList(Collections.singletonList(tiger));
+
+		Animal animalAdded = zooRepository.save(zoo).getAnimalList().get(0);
+
+		Animal animal = zoo.treatAnimal(tiger);
+
+		String requestJson = objectMapper.writeValueAsString(animal);
+
+		MvcResult mvcResult = mockMvc.perform(put("/zoo/" + animalAdded.getId())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestJson))
+                .andExpect(status().isCreated()).andReturn();
+
+		Animal actualZoo = objectMapper.readValue(mvcResult.getResponse().getContentAsString(), Animal.class);
+
+		assertEquals(AnimalMood.HAPPY, actualZoo.getAnimalMood());
 	}
 
 }

@@ -3,6 +3,7 @@ package com.example.CryptozoologyZoo.service;
 
 import com.example.CryptozoologyZoo.model.Animal;
 import com.example.CryptozoologyZoo.model.Zoo;
+import com.example.CryptozoologyZoo.repository.AnimalRepository;
 import com.example.CryptozoologyZoo.repository.ZooRepository;
 import org.springframework.stereotype.Service;
 
@@ -12,9 +13,11 @@ import java.util.Collections;
 public class ZooService {
 
     private ZooRepository zooRepository;
+    private AnimalRepository animalRepository;
 
-    public ZooService(ZooRepository zooRepository) {
+    public ZooService(ZooRepository zooRepository, AnimalRepository animalRepository) {
         this.zooRepository = zooRepository;
+        this.animalRepository = animalRepository;
     }
 
     public Zoo addAnimal(Animal animal) {
@@ -25,5 +28,14 @@ public class ZooService {
 
     public Zoo getAnimals() {
         return zooRepository.findAll().stream().findFirst().get();
+    }
+
+    public Animal updateAnimal(Animal animal, Long id) {
+        Animal animalFounded = animalRepository.findById(id).get();
+        animalFounded.setName(animal.getName());
+        animalFounded.setType(animal.getType());
+        animalFounded.setAnimalMood(animal.getAnimalMood());
+
+        return animalRepository.save(animalFounded);
     }
 }

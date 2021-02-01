@@ -15,13 +15,15 @@ public class Animal {
     private Long id;
     private String name;
     private AnimalType type;
+    private AnimalMood animalMood;
 
     public Animal() {
     }
 
-    public Animal(String name, AnimalType type) {
+    public Animal(String name, AnimalType type, AnimalMood animalMood) {
         this.name = name;
         this.type = type;
+        this.animalMood = animalMood;
     }
 
     public Long getId() {
@@ -48,6 +50,8 @@ public class Animal {
         this.type = type;
     }
 
+
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -59,5 +63,18 @@ public class Animal {
     @Override
     public int hashCode() {
         return Objects.hash(name, type);
+    }
+
+    public Animal feed() {
+        this.animalMood = AnimalMood.HAPPY;
+        return this;
+    }
+
+    public AnimalMood getAnimalMood() {
+        return animalMood;
+    }
+
+    public void setAnimalMood(AnimalMood animalMood) {
+        this.animalMood = animalMood;
     }
 }

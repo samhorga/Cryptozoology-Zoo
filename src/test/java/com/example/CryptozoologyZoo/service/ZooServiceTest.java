@@ -1,6 +1,7 @@
 package com.example.CryptozoologyZoo.service;
 
 import com.example.CryptozoologyZoo.model.Animal;
+import com.example.CryptozoologyZoo.model.AnimalMood;
 import com.example.CryptozoologyZoo.model.AnimalType;
 import com.example.CryptozoologyZoo.model.Zoo;
 import com.example.CryptozoologyZoo.repository.ZooRepository;
@@ -30,7 +31,7 @@ public class ZooServiceTest {
 
     @Test
     public void addAnimal() {
-        Animal animal = new Animal("TIGER", AnimalType.WALKING);
+        Animal animal = new Animal("TIGER", AnimalType.WALKING, AnimalMood.UNHAPPY);
         Zoo zoo = new Zoo();
         zoo.setAnimalList(Collections.singletonList(animal));
 
@@ -44,9 +45,9 @@ public class ZooServiceTest {
 
     @Test
     public void getAnimals() {
-        Animal tiger = new Animal("TIGER", AnimalType.WALKING);
-        Animal lion = new Animal("LION", AnimalType.WALKING);
-        Animal bird = new Animal("BIRD", AnimalType.FLYING);
+        Animal tiger = new Animal("TIGER", AnimalType.WALKING, AnimalMood.UNHAPPY);
+        Animal lion = new Animal("LION", AnimalType.WALKING, AnimalMood.UNHAPPY);
+        Animal bird = new Animal("BIRD", AnimalType.FLYING, AnimalMood.UNHAPPY);
 
         Zoo expectedZoo = new Zoo();
         expectedZoo.setAnimalList(Arrays.asList(tiger, lion, bird));
