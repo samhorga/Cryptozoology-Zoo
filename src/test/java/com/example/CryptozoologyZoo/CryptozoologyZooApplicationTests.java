@@ -1,9 +1,7 @@
 package com.example.CryptozoologyZoo;
 
-import com.example.CryptozoologyZoo.model.Animal;
-import com.example.CryptozoologyZoo.model.AnimalMood;
-import com.example.CryptozoologyZoo.model.AnimalType;
-import com.example.CryptozoologyZoo.model.Zoo;
+import com.example.CryptozoologyZoo.model.*;
+import com.example.CryptozoologyZoo.repository.AnimalRepository;
 import com.example.CryptozoologyZoo.repository.ZooRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -34,6 +32,9 @@ class CryptozoologyZooApplicationTests {
 
 	@Autowired
 	ZooRepository zooRepository;
+
+	@Autowired
+	AnimalRepository animalRepository;
 
 	@BeforeEach
 	public void setUp() {
@@ -90,6 +91,22 @@ class CryptozoologyZooApplicationTests {
 		Animal actualAnimal = objectMapper.readValue(mvcResult.getResponse().getContentAsString(), Animal.class);
 
 		assertEquals(AnimalMood.HAPPY, actualAnimal.getAnimalMood());
+	}
+
+	@Test
+	public void compatibleHabitat() throws Exception {
+		Animal tiger = new Animal("TIGER", AnimalType.WALKING, AnimalMood.UNHAPPY);
+
+		Animal tigerSaved = animalRepository.save(tiger);
+
+		MvcResult mvcResult = mockMvc.perform(put("/zoo/" + tigerSaved.getId() + "/habitat"))
+				.andExpect(status().isCreated()).andReturn();
+
+		Animal actualAnimal = objectMapper.readValue(mvcResult.getResponse().getContentAsString(), Animal.class);
+
+		assertEquals(AnimalMood.HAPPY, actualAnimal.getAnimalMood());
+		assertEquals(AnimalHabitat.FOREST, actualAnimal.getAnimalHabitat());
+
 	}
 
 }

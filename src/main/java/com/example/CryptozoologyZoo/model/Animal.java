@@ -16,6 +16,7 @@ public class Animal {
     private String name;
     private AnimalType type;
     private AnimalMood animalMood;
+    private AnimalHabitat animalHabitat;
 
     public Animal() {
     }
@@ -76,5 +77,13 @@ public class Animal {
 
     public void setAnimalMood(AnimalMood animalMood) {
         this.animalMood = animalMood;
+    }
+
+    public AnimalHabitat getAnimalHabitat() {
+        return animalHabitat;
+    }
+
+    public void setAnimalHabitat(AnimalHabitat animalHabitat) {
+        this.animalHabitat = animalHabitat;
     }
 }
