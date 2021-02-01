@@ -3,6 +3,7 @@ package com.example.CryptozoologyZoo.model;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 public class Zoo {
@@ -32,5 +33,18 @@ public class Zoo {
 
     public void setAnimalList(List<Animal> animalList) {
         this.animalList = animalList;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Zoo zoo = (Zoo) o;
+        return Objects.equals(animalList, zoo.animalList);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(animalList);
     }
 }
