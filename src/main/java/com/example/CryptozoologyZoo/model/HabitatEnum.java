@@ -1,5 +1,5 @@
 package com.example.CryptozoologyZoo.model;
 
-public enum AnimalHabitat {
+public enum HabitatEnum {
     NEST, OCEAN, FOREST
 }

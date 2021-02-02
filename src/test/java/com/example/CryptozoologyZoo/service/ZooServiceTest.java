@@ -1,9 +1,6 @@
 package com.example.CryptozoologyZoo.service;
 
-import com.example.CryptozoologyZoo.model.Animal;
-import com.example.CryptozoologyZoo.model.AnimalMood;
-import com.example.CryptozoologyZoo.model.AnimalType;
-import com.example.CryptozoologyZoo.model.Zoo;
+import com.example.CryptozoologyZoo.model.*;
 import com.example.CryptozoologyZoo.repository.AnimalRepository;
 import com.example.CryptozoologyZoo.repository.ZooRepository;
 import org.junit.jupiter.api.Test;
@@ -36,7 +33,7 @@ public class ZooServiceTest {
 
     @Test
     public void addAnimal() {
-        Animal animal = new Animal("TIGER", AnimalType.WALKING, AnimalMood.UNHAPPY);
+        Animal animal = new Animal("TIGER", AnimalType.WALKING, AnimalMood.UNHAPPY, HabitatEnum.FOREST);
         Zoo zoo = new Zoo();
         zoo.setAnimalList(Collections.singletonList(animal));
 
@@ -50,9 +47,9 @@ public class ZooServiceTest {
 
     @Test
     public void getAnimals() {
-        Animal tiger = new Animal("TIGER", AnimalType.WALKING, AnimalMood.UNHAPPY);
-        Animal lion = new Animal("LION", AnimalType.WALKING, AnimalMood.UNHAPPY);
-        Animal bird = new Animal("BIRD", AnimalType.FLYING, AnimalMood.UNHAPPY);
+        Animal tiger = new Animal("TIGER", AnimalType.WALKING, AnimalMood.UNHAPPY, HabitatEnum.FOREST);
+        Animal lion = new Animal("LION", AnimalType.WALKING, AnimalMood.UNHAPPY, HabitatEnum.FOREST);
+        Animal bird = new Animal("BIRD", AnimalType.FLYING, AnimalMood.UNHAPPY, HabitatEnum.NEST);
 
         Zoo expectedZoo = new Zoo();
         expectedZoo.setAnimalList(Arrays.asList(tiger, lion, bird));
@@ -69,7 +66,7 @@ public class ZooServiceTest {
 
     @Test
     public void feedAnimals() {
-        Animal tiger = new Animal("TIGER", AnimalType.WALKING, AnimalMood.UNHAPPY);
+        Animal tiger = new Animal("TIGER", AnimalType.WALKING, AnimalMood.UNHAPPY, HabitatEnum.FOREST);
 
         when(animalRepository.save(tiger)).thenReturn(tiger);
         when(animalRepository.findById(tiger.getId())).thenReturn(Optional.of(tiger));

@@ -1,6 +1,7 @@
 package com.example.CryptozoologyZoo.controller;
 
 import com.example.CryptozoologyZoo.model.Animal;
+import com.example.CryptozoologyZoo.model.Habitat;
 import com.example.CryptozoologyZoo.model.Zoo;
 import com.example.CryptozoologyZoo.service.ZooService;
 import org.springframework.http.HttpStatus;
@@ -32,5 +33,11 @@ public class ZooController {
     @ResponseStatus(HttpStatus.CREATED)
     public Animal updateAnimal(@PathVariable Long id) {
         return zooService.feedAnimal(id);
+    }
+
+    @PutMapping("/{animalId}/habitat")
+    @ResponseStatus(HttpStatus.CREATED)
+    public Animal checkAnimalHabitat(@PathVariable Long animalId, @RequestBody Habitat habitat) {
+        return zooService.checkAnimalHabitat(animalId, habitat);
     }
 }

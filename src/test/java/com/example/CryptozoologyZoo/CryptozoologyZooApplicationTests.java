@@ -2,6 +2,7 @@ package com.example.CryptozoologyZoo;
 
 import com.example.CryptozoologyZoo.model.*;
 import com.example.CryptozoologyZoo.repository.AnimalRepository;
+import com.example.CryptozoologyZoo.repository.HabitatRepository;
 import com.example.CryptozoologyZoo.repository.ZooRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -16,7 +17,7 @@ import org.springframework.test.web.servlet.MvcResult;
 import java.util.Arrays;
 import java.util.Collections;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -36,6 +37,9 @@ class CryptozoologyZooApplicationTests {
 	@Autowired
 	AnimalRepository animalRepository;
 
+	@Autowired
+	HabitatRepository habitatRepository;
+
 	@BeforeEach
 	public void setUp() {
 		objectMapper = new ObjectMapper();
@@ -43,7 +47,7 @@ class CryptozoologyZooApplicationTests {
 
 	@Test
 	public void addAnimal() throws Exception {
-		Animal animal = new Animal("TIGER", AnimalType.WALKING, AnimalMood.UNHAPPY);
+		Animal animal = new Animal("TIGER", AnimalType.WALKING, AnimalMood.UNHAPPY, HabitatEnum.FOREST);
 		Zoo zoo = new Zoo();
 		zoo.setAnimalList(Collections.singletonList(animal));
 
@@ -60,9 +64,9 @@ class CryptozoologyZooApplicationTests {
 
 	@Test
 	public void getAnimals() throws Exception {
-		Animal tiger = new Animal("TIGER", AnimalType.WALKING, AnimalMood.UNHAPPY);
-		Animal lion = new Animal("LION", AnimalType.WALKING, AnimalMood.UNHAPPY);
-		Animal bird = new Animal("BIRD", AnimalType.FLYING, AnimalMood.UNHAPPY);
+		Animal tiger = new Animal("TIGER", AnimalType.WALKING, AnimalMood.UNHAPPY, HabitatEnum.FOREST);
+		Animal lion = new Animal("LION", AnimalType.WALKING, AnimalMood.UNHAPPY, HabitatEnum.FOREST);
+		Animal bird = new Animal("BIRD", AnimalType.FLYING, AnimalMood.UNHAPPY, HabitatEnum.NEST);
 
 		Zoo expectedZoo = new Zoo();
 		expectedZoo.setAnimalList(Arrays.asList(tiger, lion, bird));
@@ -78,8 +82,8 @@ class CryptozoologyZooApplicationTests {
 	}
 
 	@Test
-	public void feedAnimalsHappyCase() throws Exception {
-		Animal tiger = new Animal("TIGER", AnimalType.WALKING, AnimalMood.UNHAPPY);
+	public void feedAnimals() throws Exception {
+		Animal tiger = new Animal("TIGER", AnimalType.WALKING, AnimalMood.UNHAPPY, HabitatEnum.FOREST);
 		Zoo zoo = new Zoo();
 		zoo.setAnimalList(Collections.singletonList(tiger));
 
@@ -95,18 +99,19 @@ class CryptozoologyZooApplicationTests {
 
 	@Test
 	public void compatibleHabitat() throws Exception {
-		Animal tiger = new Animal("TIGER", AnimalType.WALKING, AnimalMood.UNHAPPY);
-
+		Animal tiger = new Animal("TIGER", AnimalType.WALKING, AnimalMood.UNHAPPY, HabitatEnum.FOREST);
+		Habitat habitat = new Habitat(HabitatEnum.FOREST, false, null);
 		Animal tigerSaved = animalRepository.save(tiger);
+		Habitat habitatSaved = habitatRepository.save(habitat);
 
-		MvcResult mvcResult = mockMvc.perform(put("/zoo/" + tigerSaved.getId() + "/habitat"))
+		String requestJson = objectMapper.writeValueAsString(habitatSaved);
+
+		MvcResult mvcResult = mockMvc.perform(put("/zoo/" + tigerSaved.getId() + "/habitat").contentType(MediaType.APPLICATION_JSON).content(requestJson))
 				.andExpect(status().isCreated()).andReturn();
 
 		Animal actualAnimal = objectMapper.readValue(mvcResult.getResponse().getContentAsString(), Animal.class);
 
-		assertEquals(AnimalMood.HAPPY, actualAnimal.getAnimalMood());
-		assertEquals(AnimalHabitat.FOREST, actualAnimal.getAnimalHabitat());
-
+		assertEquals(HabitatEnum.FOREST, actualAnimal.getHabitat().getHabitatEnum());
 	}
 
 }

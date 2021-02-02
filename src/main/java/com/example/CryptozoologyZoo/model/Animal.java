@@ -1,10 +1,7 @@
 package com.example.CryptozoologyZoo.model;
 
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
@@ -16,12 +13,16 @@ public class Animal {
     private String name;
     private AnimalType type;
     private AnimalMood animalMood;
-    private AnimalHabitat animalHabitat;
+    private HabitatEnum habitatEnum;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    private Habitat habitat;
 
     public Animal() {
     }
 
-    public Animal(String name, AnimalType type, AnimalMood animalMood) {
+    public Animal(String name, AnimalType type, AnimalMood animalMood, HabitatEnum habitatEnum) {
+        this.habitatEnum = habitatEnum;
         this.name = name;
         this.type = type;
         this.animalMood = animalMood;
@@ -66,11 +67,6 @@ public class Animal {
         return Objects.hash(name, type);
     }
 
-    public Animal feed() {
-        this.animalMood = AnimalMood.HAPPY;
-        return this;
-    }
-
     public AnimalMood getAnimalMood() {
         return animalMood;
     }
@@ -79,11 +75,19 @@ public class Animal {
         this.animalMood = animalMood;
     }
 
-    public AnimalHabitat getAnimalHabitat() {
-        return animalHabitat;
+    public HabitatEnum getAnimalHabitat() {
+        return habitatEnum;
     }
 
-    public void setAnimalHabitat(AnimalHabitat animalHabitat) {
-        this.animalHabitat = animalHabitat;
+    public void setAnimalHabitat(HabitatEnum habitatEnum) {
+        this.habitatEnum = habitatEnum;
+    }
+
+    public Habitat getHabitat() {
+        return habitat;
+    }
+
+    public void setHabitat(Habitat habitat) {
+        this.habitat = habitat;
     }
 }
