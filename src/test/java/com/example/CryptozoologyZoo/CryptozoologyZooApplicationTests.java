@@ -43,6 +43,9 @@ class CryptozoologyZooApplicationTests {
 	@BeforeEach
 	public void setUp() {
 		objectMapper = new ObjectMapper();
+		zooRepository.deleteAll();
+		animalRepository.deleteAll();
+		habitatRepository.deleteAll();
 	}
 
 	@Test
@@ -130,6 +133,24 @@ class CryptozoologyZooApplicationTests {
 
 		assertNotEquals(HabitatEnum.FOREST, actualAnimal.getHabitat().getHabitatEnum());
 		assertEquals(AnimalMood.UNHAPPY, actualAnimal.getAnimalMood());
+	}
+
+	@Test
+	public void occupiedHabitat() throws Exception {
+		Animal tiger = new Animal("TIGER", AnimalType.WALKING, AnimalMood.HAPPY);
+		Habitat habitat = new Habitat(HabitatEnum.FOREST, true, null);
+		Animal tigerSaved = animalRepository.save(tiger);
+		Habitat habitatSaved = habitatRepository.save(habitat);
+
+		String requestJson = objectMapper.writeValueAsString(habitatSaved);
+
+		MvcResult mvcResult = mockMvc.perform(put("/zoo/" + tigerSaved.getId() + "/habitat").contentType(MediaType.APPLICATION_JSON).content(requestJson))
+				.andExpect(status().isCreated()).andReturn();
+
+		Animal actualAnimal = objectMapper.readValue(mvcResult.getResponse().getContentAsString(), Animal.class);
+
+		assertEquals(HabitatEnum.FOREST, actualAnimal.getHabitat().getHabitatEnum());
+		assertEquals(AnimalMood.HAPPY, actualAnimal.getAnimalMood());
 	}
 
 }

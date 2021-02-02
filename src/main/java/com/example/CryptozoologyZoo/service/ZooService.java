@@ -44,12 +44,15 @@ public class ZooService {
         Habitat habitatFounded = habitatRepository.findById(habitat.getId()).get();
         animalFounded.setHabitat(habitatFounded);
 
-        if (animalFounded.getType() == AnimalType.FLYING && animalFounded.getHabitat().getHabitatEnum() == HabitatEnum.NEST
-                || animalFounded.getType() == AnimalType.SWIMMING && animalFounded.getHabitat().getHabitatEnum() == HabitatEnum.OCEAN
-                || animalFounded.getType() == AnimalType.WALKING && animalFounded.getHabitat().getHabitatEnum() == HabitatEnum.FOREST) {
-            animalFounded.setAnimalMood(AnimalMood.HAPPY);
-        } else {
-            animalFounded.setAnimalMood(AnimalMood.UNHAPPY);
+
+        if(!habitat.isOccupied()) {
+            if (animalFounded.getType() == AnimalType.FLYING && animalFounded.getHabitat().getHabitatEnum() == HabitatEnum.NEST
+                    || animalFounded.getType() == AnimalType.SWIMMING && animalFounded.getHabitat().getHabitatEnum() == HabitatEnum.OCEAN
+                    || animalFounded.getType() == AnimalType.WALKING && animalFounded.getHabitat().getHabitatEnum() == HabitatEnum.FOREST) {
+                animalFounded.setAnimalMood(AnimalMood.HAPPY);
+            } else {
+                animalFounded.setAnimalMood(AnimalMood.UNHAPPY);
+            }
         }
 
         animalRepository.save(animalFounded);
