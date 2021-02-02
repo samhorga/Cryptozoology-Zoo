@@ -13,7 +13,6 @@ public class Animal {
     private String name;
     private AnimalType type;
     private AnimalMood animalMood;
-    private HabitatEnum habitatEnum;
 
     @OneToOne(cascade = CascadeType.ALL)
     private Habitat habitat;
@@ -21,8 +20,7 @@ public class Animal {
     public Animal() {
     }
 
-    public Animal(String name, AnimalType type, AnimalMood animalMood, HabitatEnum habitatEnum) {
-        this.habitatEnum = habitatEnum;
+    public Animal(String name, AnimalType type, AnimalMood animalMood) {
         this.name = name;
         this.type = type;
         this.animalMood = animalMood;
@@ -73,14 +71,6 @@ public class Animal {
 
     public void setAnimalMood(AnimalMood animalMood) {
         this.animalMood = animalMood;
-    }
-
-    public HabitatEnum getAnimalHabitat() {
-        return habitatEnum;
-    }
-
-    public void setAnimalHabitat(HabitatEnum habitatEnum) {
-        this.habitatEnum = habitatEnum;
     }
 
     public Habitat getHabitat() {

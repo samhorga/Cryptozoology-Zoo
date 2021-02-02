@@ -47,7 +47,7 @@ class CryptozoologyZooApplicationTests {
 
 	@Test
 	public void addAnimal() throws Exception {
-		Animal animal = new Animal("TIGER", AnimalType.WALKING, AnimalMood.UNHAPPY, HabitatEnum.FOREST);
+		Animal animal = new Animal("TIGER", AnimalType.WALKING, AnimalMood.UNHAPPY);
 		Zoo zoo = new Zoo();
 		zoo.setAnimalList(Collections.singletonList(animal));
 
@@ -64,9 +64,9 @@ class CryptozoologyZooApplicationTests {
 
 	@Test
 	public void getAnimals() throws Exception {
-		Animal tiger = new Animal("TIGER", AnimalType.WALKING, AnimalMood.UNHAPPY, HabitatEnum.FOREST);
-		Animal lion = new Animal("LION", AnimalType.WALKING, AnimalMood.UNHAPPY, HabitatEnum.FOREST);
-		Animal bird = new Animal("BIRD", AnimalType.FLYING, AnimalMood.UNHAPPY, HabitatEnum.NEST);
+		Animal tiger = new Animal("TIGER", AnimalType.WALKING, AnimalMood.UNHAPPY);
+		Animal lion = new Animal("LION", AnimalType.WALKING, AnimalMood.UNHAPPY);
+		Animal bird = new Animal("BIRD", AnimalType.FLYING, AnimalMood.UNHAPPY);
 
 		Zoo expectedZoo = new Zoo();
 		expectedZoo.setAnimalList(Arrays.asList(tiger, lion, bird));
@@ -83,7 +83,7 @@ class CryptozoologyZooApplicationTests {
 
 	@Test
 	public void feedAnimals() throws Exception {
-		Animal tiger = new Animal("TIGER", AnimalType.WALKING, AnimalMood.UNHAPPY, HabitatEnum.FOREST);
+		Animal tiger = new Animal("TIGER", AnimalType.WALKING, AnimalMood.UNHAPPY);
 		Zoo zoo = new Zoo();
 		zoo.setAnimalList(Collections.singletonList(tiger));
 
@@ -99,7 +99,7 @@ class CryptozoologyZooApplicationTests {
 
 	@Test
 	public void compatibleHabitat() throws Exception {
-		Animal tiger = new Animal("TIGER", AnimalType.WALKING, AnimalMood.UNHAPPY, HabitatEnum.FOREST);
+		Animal tiger = new Animal("TIGER", AnimalType.WALKING, AnimalMood.UNHAPPY);
 		Habitat habitat = new Habitat(HabitatEnum.FOREST, false, null);
 		Animal tigerSaved = animalRepository.save(tiger);
 		Habitat habitatSaved = habitatRepository.save(habitat);
@@ -112,6 +112,24 @@ class CryptozoologyZooApplicationTests {
 		Animal actualAnimal = objectMapper.readValue(mvcResult.getResponse().getContentAsString(), Animal.class);
 
 		assertEquals(HabitatEnum.FOREST, actualAnimal.getHabitat().getHabitatEnum());
+	}
+
+	@Test
+	public void inCompatibleHabitat() throws Exception {
+		Animal tiger = new Animal("TIGER", AnimalType.WALKING, AnimalMood.HAPPY);
+		Habitat habitat = new Habitat(HabitatEnum.NEST, false, null);
+		Animal tigerSaved = animalRepository.save(tiger);
+		Habitat habitatSaved = habitatRepository.save(habitat);
+
+		String requestJson = objectMapper.writeValueAsString(habitatSaved);
+
+		MvcResult mvcResult = mockMvc.perform(put("/zoo/" + tigerSaved.getId() + "/habitat").contentType(MediaType.APPLICATION_JSON).content(requestJson))
+				.andExpect(status().isCreated()).andReturn();
+
+		Animal actualAnimal = objectMapper.readValue(mvcResult.getResponse().getContentAsString(), Animal.class);
+
+		assertNotEquals(HabitatEnum.FOREST, actualAnimal.getHabitat().getHabitatEnum());
+		assertEquals(AnimalMood.UNHAPPY, actualAnimal.getAnimalMood());
 	}
 
 }

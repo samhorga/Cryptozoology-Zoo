@@ -33,7 +33,7 @@ public class ZooServiceTest {
 
     @Test
     public void addAnimal() {
-        Animal animal = new Animal("TIGER", AnimalType.WALKING, AnimalMood.UNHAPPY, HabitatEnum.FOREST);
+        Animal animal = new Animal("TIGER", AnimalType.WALKING, AnimalMood.UNHAPPY);
         Zoo zoo = new Zoo();
         zoo.setAnimalList(Collections.singletonList(animal));
 
@@ -47,9 +47,9 @@ public class ZooServiceTest {
 
     @Test
     public void getAnimals() {
-        Animal tiger = new Animal("TIGER", AnimalType.WALKING, AnimalMood.UNHAPPY, HabitatEnum.FOREST);
-        Animal lion = new Animal("LION", AnimalType.WALKING, AnimalMood.UNHAPPY, HabitatEnum.FOREST);
-        Animal bird = new Animal("BIRD", AnimalType.FLYING, AnimalMood.UNHAPPY, HabitatEnum.NEST);
+        Animal tiger = new Animal("TIGER", AnimalType.WALKING, AnimalMood.UNHAPPY);
+        Animal lion = new Animal("LION", AnimalType.WALKING, AnimalMood.UNHAPPY);
+        Animal bird = new Animal("BIRD", AnimalType.FLYING, AnimalMood.UNHAPPY);
 
         Zoo expectedZoo = new Zoo();
         expectedZoo.setAnimalList(Arrays.asList(tiger, lion, bird));
@@ -66,7 +66,7 @@ public class ZooServiceTest {
 
     @Test
     public void feedAnimals() {
-        Animal tiger = new Animal("TIGER", AnimalType.WALKING, AnimalMood.UNHAPPY, HabitatEnum.FOREST);
+        Animal tiger = new Animal("TIGER", AnimalType.WALKING, AnimalMood.UNHAPPY);
 
         when(animalRepository.save(tiger)).thenReturn(tiger);
         when(animalRepository.findById(tiger.getId())).thenReturn(Optional.of(tiger));

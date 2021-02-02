@@ -1,10 +1,7 @@
 package com.example.CryptozoologyZoo.service;
 
 
-import com.example.CryptozoologyZoo.model.Animal;
-import com.example.CryptozoologyZoo.model.AnimalMood;
-import com.example.CryptozoologyZoo.model.Habitat;
-import com.example.CryptozoologyZoo.model.Zoo;
+import com.example.CryptozoologyZoo.model.*;
 import com.example.CryptozoologyZoo.repository.AnimalRepository;
 import com.example.CryptozoologyZoo.repository.HabitatRepository;
 import com.example.CryptozoologyZoo.repository.ZooRepository;
@@ -46,6 +43,14 @@ public class ZooService {
         Animal animalFounded = animalRepository.findById(animalId).get();
         Habitat habitatFounded = habitatRepository.findById(habitat.getId()).get();
         animalFounded.setHabitat(habitatFounded);
+
+        if (animalFounded.getType() == AnimalType.FLYING && animalFounded.getHabitat().getHabitatEnum() == HabitatEnum.NEST
+                || animalFounded.getType() == AnimalType.SWIMMING && animalFounded.getHabitat().getHabitatEnum() == HabitatEnum.OCEAN
+                || animalFounded.getType() == AnimalType.WALKING && animalFounded.getHabitat().getHabitatEnum() == HabitatEnum.FOREST) {
+            animalFounded.setAnimalMood(AnimalMood.HAPPY);
+        } else {
+            animalFounded.setAnimalMood(AnimalMood.UNHAPPY);
+        }
 
         animalRepository.save(animalFounded);
 
